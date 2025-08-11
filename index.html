@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GooseGang17 - Twitch</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow: hidden; /* Hide overflow to prevent scrollbars from animation */
+    }
+
+    /* Style for each animated background image */
+    .bg-image {
+      position: absolute;
+      width: 250px; /* Reduced size for a more subtle effect */
+      height: auto;
+      opacity: 0.2; /* Increased transparency */
+      filter: grayscale(100%); /* Desaturate the images for a cleaner look */
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .bg-image:hover {
+      opacity: 0.8;
+      filter: grayscale(0%);
+    }
+
+    .glass-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Custom styles for floating text */
+    .floating-text {
+      position: absolute;
+      will-change: transform;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-stone-950 to-stone-900 flex items-center justify-center min-h-screen relative text-white">
+
+  <!-- Container for the animated background images and text -->
+  <div class="fixed inset-0 z-0 overflow-hidden">
+    <!-- Each image is now wrapped in a link to a placeholder VGen URL -->
+    <a href="https://vgen.co/CelynIllust" target="_blank">
+      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404424103322058813/YCH_51.png?ex=689b235f&is=6899d1df&hm=9f4d585910ec0f3b370d464eb9c367517fabd69364666205c584ca9cf015336b&" alt="animated bunny suit character" class="bg-image">
+    </a>
+    <a href="https://vgen.co/KarasuRoh" target="_blank">
+      <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662161549099153/GooseGang17_-_Semi_Chibi_0.png?ex=689aa92f&is=689957af&hm=d9f001b8dced48e1846cc22ace791b0c174792f535e3e7fbdf862099d253717e&" alt="animated chibi goosegang character" class="bg-image">
+    </a>
+    <a href="https://vgen.co/Icarus293" target="_blank">
+      <img src="https://media.discordapp.net/attachments/1402661459913211915/1402662336237670562/009_-_Goosegang_PNG.png?ex=689aa959&is=689957d9&hm=4639766e63f617b2f87af49cd3bff4041d7f3528296e4392f9ca5f280fc70887&=&format=webp&quality=lossless" alt="animated goosegang png" class="bg-image">
+    </a>
+    <a href="https://vgen.co/bvnny-kxn" target="_blank">
+      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426148489854986/Illustration.jpg?ex=689b2546&is=6899d3c6&hm=04adb5840e7a0ca42c2ccbf578fb7048f9fc404c9d9d5ff74c2732dd8a497f03&" alt="animated illustration" class="bg-image">
+    </a>
+    <a href="https://vgen.co/justfa2" target="_blank">
+      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426149009817611/talk.gif?ex=689b2546&is=6899d3c6&hm=3054aeb18910d621602ec852ba4e368d894e66106ac92792474df6b33b512002&" alt="animated talk gif" class="bg-image">
+    </a>
+    <a href="https://vgen.co/Lail0r" target="_blank">
+      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426149475516518/goosegang.gif?ex=689b2547&is=6899d3c7&hm=260781d246d8113f806945633940b0877d2d686fad3ffcca1800409ebf2caa2c&" alt="animated goosegang gif" class="bg-image">
+    </a>
+    <a href="https://vgen.co/RanRanVT" target="_blank">
+      <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662562809778248/Untitled_249.png?ex=689aa98f&is=6899580f&hm=74f09b459ef1f181ecfc46b205d3344629a73dcaede3e619b449338d40d740a0&" alt="New GooseGang art" class="bg-image">
+    </a>
+  </div>
+
+  <!-- Main container for the message -->
+  <div class="relative z-10 glass-card p-8 rounded-xl shadow-2xl text-center transform transition-transform duration-500 hover:scale-105 max-w-sm w-full mx-4">
+    <!-- Image -->
+    <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404427441598107768/idle.gif?ex=689b267b&is=6899d4fb&hm=2cdd58d8adc6568a609c2c06946d68168924c33aa0dd1a002d4010049b34043f&" alt="Animated idle goose" class="rounded-xl mb-4 max-w-xs h-auto mx-auto border-4 border-white/20">
+    
+    <div class="flex items-center justify-center space-x-2">
+      <h1 class="text-4xl font-extrabold mb-2 font-serif text-white">GooseGang17</h1>
+    </div>
+    
+    <!-- Countdown Timer removed, replaced with static text -->
+    <div class="text-xl font-bold mb-4 text-purple-400">
+      <p>Check out the latest on Twitch!</p>
+    </div>
+
+    <div class="flex flex-col items-center space-y-3 mt-4">
+      <!-- Clickable Twitch link -->
+      <a href="https://www.twitch.tv/GooseGang17" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+        Twitch Channel
+      </a>
+      <!-- Schedule link -->
+      <a href="https://www.twitch.tv/goosegang17/schedule" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+        Schedule
+      </a>
+    </div>
+
+    <p class="text-gray-300 text-sm mt-4 italic">
+      Click the art to see the artist
+    </p>
+  </div>
+
+<script type="module">
+    // --- Game Loop for Animations ---
+    const images = document.querySelectorAll('.bg-image');
+    let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const speeds = [1, 1.5, 2, 2.5, 3]; // Different speed options
+    const imagesState = [];
+
+    function initializeImages() {
+        imagesState.length = 0; // Clear the array
+        images.forEach(image => {
+            const size = image.offsetWidth;
+            let x = Math.random() * (vw - size);
+            let y = Math.random() * (vh - size);
+            let vx = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
+            let vy = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
+            let rotation = 0;
+            let vr = (Math.random() - 0.5) * 0.5;
+
+            imagesState.push({ element: image, x, y, vx, vy, size, rotation, vr });
+        });
+    }
+
+    function gameLoop() {
+        imagesState.forEach(state => {
+            state.x += state.vx;
+            state.y += state.vy;
+            state.rotation += state.vr;
+
+            const elementWidth = state.element.offsetWidth;
+            const elementHeight = state.element.offsetHeight;
+
+            if (state.x + elementWidth > vw || state.x < 0) {
+                state.vx = -state.vx;
+            }
+            if (state.y + elementHeight > vh || state.y < 0) {
+                state.vy = -state.vy;
+            }
+            
+            state.element.style.transform = `translate(${state.x}px, ${state.y}px) rotate(${state.rotation}deg)`;
+        });
+
+        requestAnimationFrame(gameLoop);
+    }
+    
+    // Main entry point
+    window.onload = function() {
+        initializeImages();
+        requestAnimationFrame(gameLoop);
+
+        // Set up the resize handler
+        window.onresize = () => {
+            vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+            initializeImages();
+        };
+    };
+</script>
+</body>
+</html>
