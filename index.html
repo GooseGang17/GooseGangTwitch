@@ -1,161 +1,536 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GooseGang17 - Twitch</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      overflow: hidden; /* Hide overflow to prevent scrollbars from animation */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GooseGang17 - Twitch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            user-select: none; /* Prevent text selection while dragging */
+            /* Default styles for modern look */
+            background-color: #171717;
+            background-image: none;
+            color: #ffffff;
+        }
 
-    /* Style for each animated background image */
-    .bg-image {
-      position: absolute;
-      width: 250px; /* Reduced size for a more subtle effect */
-      height: auto;
-      opacity: 0.2; /* Increased transparency */
-      filter: grayscale(100%); /* Desaturate the images for a cleaner look */
-      transition: opacity 0.5s ease-in-out;
-    }
+        body.retro-mode {
+            font-family: 'Verdana', sans-serif;
+            background-color: #C0C0C0; /* Classic Windows 95 grey */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%239E9E9E' d='M0 0h8v8H0V0zm8 8h8v8H8V8z'/%3E%3C/svg%3E");
+            color: #000000;
+        }
 
-    .bg-image:hover {
-      opacity: 0.8;
-      filter: grayscale(0%);
-    }
+        /* Style for each animated background image */
+        .bg-image {
+            position: absolute;
+            width: 250px;
+            height: auto;
+            opacity: 0.2;
+            filter: grayscale(100%);
+            transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
+            cursor: grab;
+        }
 
-    .glass-card {
-      background-color: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+        body.retro-mode .bg-image {
+            opacity: 1;
+            filter: grayscale(0%);
+            border: 2px solid #000;
+            box-shadow: 4px 4px #808080;
+            cursor: move;
+        }
 
-    /* Custom styles for floating text */
-    .floating-text {
-      position: absolute;
-      will-change: transform;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-  </style>
+        .bg-image:hover {
+            opacity: 0.8;
+            filter: grayscale(0%);
+        }
+
+        .bg-image.dragging {
+            cursor: grabbing;
+        }
+
+        /* New class for the temporary full-color effect */
+        .full-color {
+            filter: grayscale(0%);
+            opacity: 1;
+            transition: filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Retro-specific styles */
+        .retro-card {
+            background-color: #C0C0C0;
+            border: 2px solid #000;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            box-shadow: 2px 2px #808080;
+            display: none; /* Initially hidden */
+        }
+
+        body.retro-mode .retro-card {
+            display: block;
+        }
+        
+        .retro-title-bar {
+            background-color: #000080;
+            color: #fff;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 2px solid #000;
+        }
+
+        .retro-button {
+            background-color: #C0C0C0;
+            border: 2px solid #000;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            box-shadow: 2px 2px #808080;
+            padding: 4px 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .retro-button:active {
+            box-shadow: none;
+            transform: translate(2px, 2px);
+            border-color: #000 #fff #fff #000;
+        }
+        
+        /* Custom styles for floating text */
+        .floating-text {
+            position: absolute;
+            will-change: transform;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-stone-950 to-stone-900 flex items-center justify-center min-h-screen relative text-white">
 
-  <!-- Container for the animated background images and text -->
-  <div class="fixed inset-0 z-0 overflow-hidden">
-    <!-- Each image is now wrapped in a link to a placeholder VGen URL -->
-    <a href="https://vgen.co/CelynIllust" target="_blank">
-      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404424103322058813/YCH_51.png?ex=689b235f&is=6899d1df&hm=9f4d585910ec0f3b370d464eb9c367517fabd69364666205c584ca9cf015336b&" alt="animated bunny suit character" class="bg-image">
-    </a>
-    <a href="https://vgen.co/KarasuRoh" target="_blank">
-      <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662161549099153/GooseGang17_-_Semi_Chibi_0.png?ex=689aa92f&is=689957af&hm=d9f001b8dced48e1846cc22ace791b0c174792f535e3e7fbdf862099d253717e&" alt="animated chibi goosegang character" class="bg-image">
-    </a>
-    <a href="https://vgen.co/Icarus293" target="_blank">
-      <img src="https://media.discordapp.net/attachments/1402661459913211915/1402662336237670562/009_-_Goosegang_PNG.png?ex=689aa959&is=689957d9&hm=4639766e63f617b2f87af49cd3bff4041d7f3528296e4392f9ca5f280fc70887&=&format=webp&quality=lossless" alt="animated goosegang png" class="bg-image">
-    </a>
-    <a href="https://vgen.co/bvnny-kxn" target="_blank">
-      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426148489854986/Illustration.jpg?ex=689b2546&is=6899d3c6&hm=04adb5840e7a0ca42c2ccbf578fb7048f9fc404c9d9d5ff74c2732dd8a497f03&" alt="animated illustration" class="bg-image">
-    </a>
-    <a href="https://vgen.co/justfa2" target="_blank">
-      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426149009817611/talk.gif?ex=689b2546&is=6899d3c6&hm=3054aeb18910d621602ec852ba4e368d894e66106ac92792474df6b33b512002&" alt="animated talk gif" class="bg-image">
-    </a>
-    <a href="https://vgen.co/Lail0r" target="_blank">
-      <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426149475516518/goosegang.gif?ex=689b2547&is=6899d3c7&hm=260781d246d8113f806945633940b0877d2d686fad3ffcca1800409ebf2caa2c&" alt="animated goosegang gif" class="bg-image">
-    </a>
-    <a href="https://vgen.co/RanRanVT" target="_blank">
-      <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662562809778248/Untitled_249.png?ex=689aa98f&is=6899580f&hm=74f09b459ef1f181ecfc46b205d3344629a73dcaede3e619b449338d40d740a0&" alt="New GooseGang art" class="bg-image">
-    </a>
-  </div>
-
-  <!-- Main container for the message -->
-  <div class="relative z-10 glass-card p-8 rounded-xl shadow-2xl text-center transform transition-transform duration-500 hover:scale-105 max-w-sm w-full mx-4">
-    <!-- Image -->
-    <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404427441598107768/idle.gif?ex=689b267b&is=6899d4fb&hm=2cdd58d8adc6568a609c2c06946d68168924c33aa0dd1a002d4010049b34043f&" alt="Animated idle goose" class="rounded-xl mb-4 max-w-xs h-auto mx-auto border-4 border-white/20">
+    <!-- Canvas for the retro drag line effect -->
+    <canvas id="drag-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-10"></canvas>
     
-    <div class="flex items-center justify-center space-x-2">
-      <h1 class="text-4xl font-extrabold mb-2 font-serif text-white">GooseGang17</h1>
-    </div>
-    
-    <!-- Countdown Timer removed, replaced with static text -->
-    <div class="text-xl font-bold mb-4 text-purple-400">
-      <p>Check out the latest on Twitch!</p>
+    <div class="fixed inset-0 z-0 overflow-hidden">
+        <a href="https://vgen.co/CelynIllust" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404424103322058813/YCH_51.png?ex=689b235f&is=6899d1df&hm=9f4d585910ec0f3b370d464eb9c367517fabd69364666205c584ca9cf015336b&" alt="animated bunny suit character" class="bg-image">
+        </a>
+        <a href="https://vgen.co/KarasuRoh" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662161549099153/GooseGang17_-_Semi_Chibi_0.png?ex=689aa92f&is=689957af&hm=d9f001b8dced48e1846cc22ace791b0c174792f535e3e7fbdf862099d253717e&" alt="animated chibi goosegang character" class="bg-image">
+        </a>
+        <a href="https://vgen.co/Icarus293" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662336237670562/009_-_Goosegang_PNG.png?ex=689b5219&is=689a0099&hm=3c9d7523ca7ab75abf0455eddf18470f89e8f6a12963c4ddaf4ae716555da772&" alt="animated goosegang png" class="bg-image">
+        </a>
+        <a href="https://vgen.co/bvnny-kxn" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426148489854986/Illustration.jpg?ex=689b2546&is=6899d3c6&hm=04adb5840e7a0ca42c2ccbf578fb7048f9fc404c9d9d5ff74c2732dd8a497f03&" alt="animated illustration" class="bg-image">
+        </a>
+        <a href="https://vgen.co/justfa2" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426149009817611/talk.gif?ex=689b2546&is=6899d3c6&hm=3054aeb18910d621602ec852ba4e368d894e66106ac92792474df6b33b512002&" alt="animated talk gif" class="bg-image">
+        </a>
+        <a href="https://vgen.co/Lail0r" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404426149475516518/goosegang.gif?ex=689b2547&is=6899d3c7&hm=260781d246d8113f806945633940b0877d2d686fad3ffcca1800409ebf2caa2c&" alt="animated goosegang gif" class="bg-image">
+        </a>
+        <a href="https://vgen.co/RanRanVT" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662562809778248/Untitled_249.png?ex=689aa98f&is=6899580f&hm=74f09b459ef1f181ecfc46b205d3344629a73dcaede3e619b449338d40d740a0&" alt="New GooseGang art" class="bg-image">
+        </a>
     </div>
 
-    <div class="flex flex-col items-center space-y-3 mt-4">
-      <!-- Clickable Twitch link -->
-      <a href="https://www.twitch.tv/GooseGang17" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
-        Twitch Channel
-      </a>
-      <!-- Schedule link -->
-      <a href="https://www.twitch.tv/goosegang17/schedule" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
-        Schedule
-      </a>
+    <!-- Modern Style Card -->
+    <div id="modern-card" class="relative z-20 glass-card p-8 rounded-xl shadow-2xl text-center transform transition-transform duration-500 hover:scale-105 max-w-sm w-full mx-4">
+        <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404427441598107768/idle.gif?ex=689b267b&is=6899d4fb&hm=2cdd58d8adc6568a609c2c06946d68168924c33aa0dd1a002d4010049b34043f&" alt="Animated idle goose" class="rounded-xl mb-4 max-w-xs h-auto mx-auto border-4 border-white/20">
+        <div class="flex items-center justify-center space-x-2">
+            <h1 class="text-4xl font-extrabold mb-2 font-serif text-white">GooseGang17</h1>
+        </div>
+        <div id="modern-text" class="text-xl font-bold mb-4 text-purple-400">
+            <p>Check out the latest on Twitch!</p>
+        </div>
+        <div class="flex flex-col items-center space-y-3 mt-4">
+            <a href="https://www.twitch.tv/GooseGang17" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+                Twitch Channel
+            </a>
+            <a href="https://www.twitch.tv/goosegang17/schedule" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+                Schedule
+            </a>
+            <!-- New button to toggle style -->
+            <button onclick="toggleStyle()" class="w-full text-white bg-gray-600 hover:bg-gray-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+                Retro
+            </button>
+        </div>
+        <p class="text-gray-300 text-sm mt-4 italic">
+            Click the art to see the artist
+        </p>
     </div>
 
-    <p class="text-gray-300 text-sm mt-4 italic">
-      Click the art to see the artist
-    </p>
-  </div>
+    <!-- Retro Style Card (Initially hidden) -->
+    <div id="retro-card" class="relative z-20 retro-card p-4 mx-4 max-w-sm w-full">
+        <div class="retro-title-bar mb-4">GooseGang17 - Twitch Channel</div>
+        <div class="p-2">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1404427441598107768/idle.gif?ex=689b267b&is=6899d4fb&hm=2cdd58d8adc6568a609c2c06946d68168924c33aa0dd1a002d4010049b34043f&" alt="Animated idle goose" class="border-2 border-black mb-4 w-full mx-auto">
+            <marquee behavior="scroll" direction="left" class="text-xs text-red-500 font-bold mb-2">Check out the latest on Twitch!</marquee>
+            <div class="flex flex-col items-center space-y-2">
+                <a href="https://www.twitch.tv/GooseGang17" target="_blank" class="w-full retro-button">
+                    Twitch Channel
+                </a>
+                <a href="https://www.twitch.tv/goosegang17/schedule" target="_blank" class="w-full retro-button">
+                    Schedule
+                </a>
+                <button onclick="toggleStyle()" class="w-full retro-button">
+                    Retro
+                </button>
+            </div>
+            <p class="text-xs text-center mt-4">
+                Click the art to see the artist
+            </p>
+        </div>
+    </div>
 
-<script type="module">
-    // --- Game Loop for Animations ---
-    const images = document.querySelectorAll('.bg-image');
-    let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-    let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-    const speeds = [1, 1.5, 2, 2.5, 3]; // Different speed options
-    const imagesState = [];
 
-    function initializeImages() {
-        imagesState.length = 0; // Clear the array
-        images.forEach(image => {
-            const size = image.offsetWidth;
-            let x = Math.random() * (vw - size);
-            let y = Math.random() * (vh - size);
-            let vx = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
-            let vy = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
-            let rotation = 0;
-            let vr = (Math.random() - 0.5) * 0.5;
+    <script>
+        // --- Game Loop for Animations ---
+        const images = document.querySelectorAll('.bg-image');
+        let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const speeds = [1, 1.5, 2, 2.5, 3];
+        const imagesState = [];
+        const collisionRadius = 125; // The distance at which images collide
+        const friction = 0.99; // The value that controls how quickly the images slow down
+        const maxSpeed = 10; // The maximum speed for images
 
-            imagesState.push({ element: image, x, y, vx, vy, size, rotation, vr });
-        });
-    }
+        // Canvas for the retro drag line
+        const dragCanvas = document.getElementById('drag-canvas');
+        const ctx = dragCanvas.getContext('2d');
+        let initialDragX = 0;
+        let initialDragY = 0;
+        const dragThreshold = 100; // Drag distance in pixels to trigger the effect
+        let dragLineColor = '#FF00FF'; // Default color, will be updated dynamically
 
-    function gameLoop() {
-        imagesState.forEach(state => {
-            state.x += state.vx;
-            state.y += state.vy;
-            state.rotation += state.vr;
+        // Function to create a retro error sound
+        const playErrorSound = () => {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
 
-            const elementWidth = state.element.offsetWidth;
-            const elementHeight = state.element.offsetHeight;
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(80, audioContext.currentTime + 0.1);
 
-            if (state.x + elementWidth > vw || state.x < 0) {
-                state.vx = -state.vx;
-            }
-            if (state.y + elementHeight > vh || state.y < 0) {
-                state.vy = -state.vy;
-            }
-            
-            state.element.style.transform = `translate(${state.x}px, ${state.y}px) rotate(${state.rotation}deg)`;
-        });
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
 
-        requestAnimationFrame(gameLoop);
-    }
-    
-    // Main entry point
-    window.onload = function() {
-        initializeImages();
-        requestAnimationFrame(gameLoop);
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
 
-        // Set up the resize handler
-        window.onresize = () => {
-            vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-            vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-            initializeImages();
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.5);
         };
-    };
-</script>
+
+        // Function to get the dominant color of an image
+        function getDominantColor(imgEl) {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = imgEl.naturalWidth;
+            tempCanvas.height = imgEl.naturalHeight;
+            tempCtx.drawImage(imgEl, 0, 0, tempCanvas.width, tempCanvas.height);
+            const imageData = tempCtx.getImageData(
+                Math.floor(tempCanvas.width / 2), 
+                Math.floor(tempCanvas.height / 2), 
+                1, 1
+            ).data;
+            return `rgb(${imageData[0]}, ${imageData[1]}, ${imageData[2]})`;
+        }
+        
+        function initializeImages() {
+            imagesState.length = 0;
+            images.forEach(image => {
+                const size = image.offsetWidth;
+                let x = Math.random() * (vw - size);
+                let y = Math.random() * (vh - size);
+                let vx = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
+                let vy = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
+                let rotation = 0;
+                let vr = (Math.random() - 0.5) * 0.5;
+
+                imagesState.push({
+                    element: image,
+                    x, y, vx, vy, size, rotation, vr,
+                    isDragging: false,
+                    startX: 0,
+                    startY: 0,
+                    lastX: x,
+                    lastY: y,
+                    lastTime: performance.now(),
+                    wasDragged: false,
+                    errorTriggered: false, // New flag for the error effect
+                    dropTime: 0 // New property to store the time an image was dropped
+                });
+            });
+        }
+        
+        // Function to toggle between modern and retro styles
+        function toggleStyle() {
+            const body = document.body;
+            const modernCard = document.getElementById('modern-card');
+            const retroCard = document.getElementById('retro-card');
+
+            // Toggle the main body class
+            body.classList.toggle('retro-mode');
+            body.classList.toggle('bg-gradient-to-br');
+            body.classList.toggle('from-stone-950');
+            body.classList.toggle('to-stone-900');
+            body.classList.toggle('text-white');
+
+            // Toggle the visibility of the cards
+            modernCard.style.display = body.classList.contains('retro-mode') ? 'none' : 'block';
+            retroCard.style.display = body.classList.contains('retro-mode') ? 'block' : 'none';
+
+            // Re-initialize images to get a new layout
+            initializeImages();
+        }
+
+        // Function to check for and handle collisions between images
+        function checkCollisions() {
+            for (let i = 0; i < imagesState.length; i++) {
+                if (imagesState[i].isDragging) continue;
+
+                for (let j = i + 1; j < imagesState.length; j++) {
+                    if (imagesState[j].isDragging) continue;
+                    
+                    const img1 = imagesState[i];
+                    const img2 = imagesState[j];
+
+                    // Calculate distance between centers
+                    const dx = (img1.x + img1.size / 2) - (img2.x + img2.size / 2);
+                    const dy = (img1.y + img1.size / 2) - (img2.y + img2.size / 2);
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Collision logic
+                    if (distance < collisionRadius) {
+                        // Normalize the collision normal vector
+                        const nx = dx / distance;
+                        const ny = dy / distance;
+
+                        // Calculate relative velocity
+                        const rel_vx = img1.vx - img2.vx;
+                        const rel_vy = img1.vy - img2.vy;
+                        
+                        // Calculate dot product of relative velocity and normal vector
+                        const dot_product = rel_vx * nx + rel_vy * ny;
+
+                        // Only bounce if images are moving towards each other
+                        if (dot_product < 0) {
+                            // Calculate impulse
+                            const impulse = -2 * dot_product;
+
+                            // Apply impulse to velocities
+                            img1.vx += impulse * nx;
+                            img1.vy += impulse * ny;
+                            img2.vx -= impulse * nx;
+                            img2.vy -= impulse * ny;
+
+                            // To prevent images from getting stuck, separate them slightly
+                            const overlap = collisionRadius - distance;
+                            const separationX = overlap * nx;
+                            const separationY = overlap * ny;
+                            img1.x += separationX / 2;
+                            img1.y += separationY / 2;
+                            img2.x -= separationX / 2;
+                            img2.y -= separationY / 2;
+                        }
+                    }
+                }
+            }
+        }
+
+        function gameLoop(currentTime) {
+            imagesState.forEach(state => {
+                if (!state.isDragging) {
+                    // Apply movement if not dragging
+                    state.x += state.vx;
+                    state.y += state.vy;
+                    // Apply friction to slow the images down
+                    state.vx *= friction;
+                    state.vy *= friction;
+                    
+                    // Cap the speed to prevent it from building up too much, only after 1 second of being dropped
+                    if (currentTime - state.dropTime > 1000) {
+                        const speed = Math.sqrt(state.vx * state.vx + state.vy * state.vy);
+                        if (speed > maxSpeed) {
+                            const ratio = maxSpeed / speed;
+                            state.vx *= ratio;
+                            state.vy *= ratio;
+                        }
+                    }
+                }
+                
+                state.rotation += state.vr;
+
+                const elementWidth = state.element.offsetWidth;
+                const elementHeight = state.element.offsetHeight;
+
+                // Corner detection and bounce logic
+                const hitLeft = state.x < 0;
+                const hitRight = state.x + elementWidth > vw;
+                const hitTop = state.y < 0;
+                const hitBottom = state.y + elementHeight > vh;
+                
+                if (hitLeft || hitRight) {
+                    state.vx = -state.vx;
+                    // Reset position to prevent sticking to the edge
+                    if (hitLeft) state.x = 0;
+                    if (hitRight) state.x = vw - elementWidth;
+                }
+                if (hitTop || hitBottom) {
+                    state.vy = -state.vy;
+                    // Reset position to prevent sticking to the edge
+                    if (hitTop) state.y = 0;
+                    if (hitBottom) state.y = vh - elementHeight;
+                }
+                
+                state.element.style.transform = `translate(${state.x}px, ${state.y}px) rotate(${state.rotation}deg)`;
+            });
+
+            checkCollisions();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Drag and Drop Logic ---
+        let currentDragging = null;
+
+        document.addEventListener('mousedown', (e) => {
+            const target = e.target.closest('.bg-image');
+            if (target) {
+                e.preventDefault();
+                const state = imagesState.find(s => s.element === target);
+                state.isDragging = true;
+                state.wasDragged = false;
+                currentDragging = state;
+                target.classList.add('dragging');
+                state.startX = e.clientX;
+                state.startY = e.clientY;
+                state.lastX = state.x;
+                state.lastY = state.y;
+                state.lastTime = performance.now();
+                state.vx = 0; // Stop existing velocity
+                state.vy = 0;
+                // Retro mode specific drag setup
+                if (document.body.classList.contains('retro-mode')) {
+                    initialDragX = e.clientX;
+                    initialDragY = e.clientY;
+                    // Get the dominant color of the image when dragging starts
+                    dragLineColor = getDominantColor(target);
+                }
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (currentDragging) {
+                const state = currentDragging;
+                const dx = e.clientX - state.startX;
+                const dy = e.clientY - state.startY;
+
+                state.x = state.x + dx;
+                state.y = state.y + dy;
+
+                state.startX = e.clientX;
+                state.startY = e.clientY;
+
+                // Calculate "throwing" velocity
+                const timeDiff = performance.now() - state.lastTime;
+                state.vx = (state.x - state.lastX) / timeDiff * 16.67; // Normalize velocity
+                state.vy = (state.y - state.lastY) / timeDiff * 16.67;
+                
+                state.lastX = state.x;
+                state.lastY = state.y;
+                state.lastTime = performance.now();
+
+                state.wasDragged = true;
+
+                // Retro mode specific drag effect
+                if (document.body.classList.contains('retro-mode')) {
+                    const dragDistance = Math.sqrt(
+                        Math.pow(e.clientX - initialDragX, 2) + 
+                        Math.pow(e.clientY - initialDragY, 2)
+                    );
+                    
+                    if (dragDistance > dragThreshold) {
+                        if (!state.errorTriggered) {
+                            state.errorTriggered = true;
+                            playErrorSound();
+                        }
+                        
+                        // Draw the line on the canvas using the image's color
+                        ctx.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
+                        ctx.beginPath();
+                        ctx.moveTo(initialDragX, initialDragY);
+                        ctx.lineTo(e.clientX, e.clientY);
+                        ctx.strokeStyle = dragLineColor;
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 5]); // Dashed line
+                        ctx.stroke();
+                    } else {
+                        // If we are below the threshold, but had an error, clear the line
+                        if (state.errorTriggered) {
+                            ctx.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
+                        }
+                        state.errorTriggered = false;
+                    }
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (currentDragging) {
+                currentDragging.isDragging = false;
+                currentDragging.element.classList.remove('dragging');
+                currentDragging.dropTime = performance.now(); // Set drop time when released
+                
+                // Clear the drag line and reset error flag for retro mode
+                if (document.body.classList.contains('retro-mode')) {
+                    ctx.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
+                    currentDragging.errorTriggered = false;
+                }
+                
+                currentDragging = null;
+            }
+        });
+        
+        // Prevent default link action if dragged
+        images.forEach(image => {
+            image.parentElement.addEventListener('click', (e) => {
+                const state = imagesState.find(s => s.element === image);
+                if (state && state.wasDragged) {
+                    e.preventDefault();
+                    state.wasDragged = false; // Reset the flag
+                }
+            }, true);
+        });
+
+        // Main entry point
+        window.onload = function() {
+            // Set canvas size
+            dragCanvas.width = vw;
+            dragCanvas.height = vh;
+
+            initializeImages();
+            requestAnimationFrame(gameLoop);
+
+            // Set up the resize handler
+            window.onresize = () => {
+                vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+                vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+                dragCanvas.width = vw;
+                dragCanvas.height = vh;
+                initializeImages();
+            };
+        };
+    </script>
 </body>
 </html>
