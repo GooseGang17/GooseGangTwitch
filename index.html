@@ -140,6 +140,22 @@
         <a href="https://vgen.co/RanRanVT" target="_blank">
             <img src="https://cdn.discordapp.com/attachments/1402661459913211915/1402662562809778248/Untitled_249.png?ex=689aa98f&is=6899580f&hm=74f09b459ef1f181ecfc46b205d3344629a73dcaede3e619b449338d40d740a0&" alt="New GooseGang art" class="bg-image">
         </a>
+        <a href="https://vgen.co/rose0famber" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1374596338787946516/goose.goober.PNG?ex=689b63d9&is=689a1259&hm=171e63ac244c400c8c8b97d86cd1d17d3bea229e3b96a881dc7a081a001b26f8&" alt="Goose Goober" class="bg-image">
+        </a>
+        <a href="https://vgen.co/CupVT" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1372540099933245450/GooseUmActually.png?ex=689bd1d4&is=689a8054&hm=0a33d23c1074a44adb1c8342605556a0073e46bb1584207dc758e01540ea994a&" alt="Goose Um Actually" class="bg-image">
+        </a>
+        <a href="https://vgen.co/Bztvzt" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1364512751933718548/1373302646173339678/Sped_up.gif?ex=689b4c41&is=6899fac1&hm=903e01250482ba7211113669f4896d26fae6d59f7dfb386e066169dcbe390fc0&" alt="Sped up GIF" class="bg-image">
+        </a>
+        <a href="https://www.twitch.tv/myriadaptive" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1365862484371570728/1404617073694478357/image.png?ex=689bd716&is=689a8596&hm=e30966220d65a90a55ecb40aea9fee2dff7d18bf497fe1185c86c9c859fc4f37&" alt="Myriadaptive's Image" class="bg-image">
+        </a>
+        <!-- New image added -->
+        <a href="https://www.twitch.tv/jonkerhimself" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/1347530751461163080/1398665741821022208/image.png?ex=689b487a&is=6899f6fa&hm=7b8a6b5adaaebe407ee081ebb5727feb7327a27273556582c1585f9c225f2629&" alt="Jonkerhimself Twitch art" class="bg-image">
+        </a>
     </div>
 
     <!-- Modern Style Card -->
@@ -191,27 +207,33 @@
         </div>
     </div>
 
-
-    <script>
-        // --- Game Loop for Animations ---
+    <script type="text/javascript">
+    window.onload = function() {
+        // Main logic for the app
         const images = document.querySelectorAll('.bg-image');
         let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
         let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
         const speeds = [1, 1.5, 2, 2.5, 3];
         const imagesState = [];
-        const collisionRadius = 125; // The distance at which images collide
-        const friction = 0.99; // The value that controls how quickly the images slow down
-        const maxSpeed = 10; // The maximum speed for images
+        const collisionRadius = 125;
+        const friction = 0.99;
+        let maxSpeed;
 
-        // Canvas for the retro drag line
         const dragCanvas = document.getElementById('drag-canvas');
         const ctx = dragCanvas.getContext('2d');
         let initialDragX = 0;
         let initialDragY = 0;
-        const dragThreshold = 100; // Drag distance in pixels to trigger the effect
-        let dragLineColor = '#FF00FF'; // Default color, will be updated dynamically
+        const dragThreshold = 100;
+        let dragLineColor = '#FF00FF';
 
-        // Function to create a retro error sound
+        // Function to detect if the device is a mobile device
+        function isMobile() {
+            return window.innerWidth < 768;
+        }
+
+        // Check for mobile device once on load
+        const isMobileDevice = isMobile();
+        
         const playErrorSound = () => {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
@@ -231,7 +253,6 @@
             oscillator.stop(audioContext.currentTime + 0.5);
         };
 
-        // Function to get the dominant color of an image
         function getDominantColor(imgEl) {
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
@@ -248,7 +269,11 @@
         
         function initializeImages() {
             imagesState.length = 0;
-            images.forEach(image => {
+            const updatedImages = document.querySelectorAll('.bg-image');
+            
+            maxSpeed = Math.min(vw, vh) * 0.008;
+
+            updatedImages.forEach(image => {
                 const size = image.offsetWidth;
                 let x = Math.random() * (vw - size);
                 let y = Math.random() * (vh - size);
@@ -256,6 +281,8 @@
                 let vy = (Math.random() - 0.5) * 2 * speeds[Math.floor(Math.random() * speeds.length)];
                 let rotation = 0;
                 let vr = (Math.random() - 0.5) * 0.5;
+                
+                image.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
 
                 imagesState.push({
                     element: image,
@@ -267,74 +294,60 @@
                     lastY: y,
                     lastTime: performance.now(),
                     wasDragged: false,
-                    errorTriggered: false, // New flag for the error effect
-                    dropTime: 0 // New property to store the time an image was dropped
+                    errorTriggered: false,
+                    dropTime: 0
                 });
             });
         }
         
-        // Function to toggle between modern and retro styles
         function toggleStyle() {
             const body = document.body;
             const modernCard = document.getElementById('modern-card');
             const retroCard = document.getElementById('retro-card');
 
-            // Toggle the main body class
             body.classList.toggle('retro-mode');
             body.classList.toggle('bg-gradient-to-br');
             body.classList.toggle('from-stone-950');
             body.classList.toggle('to-stone-900');
             body.classList.toggle('text-white');
 
-            // Toggle the visibility of the cards
             modernCard.style.display = body.classList.contains('retro-mode') ? 'none' : 'block';
             retroCard.style.display = body.classList.contains('retro-mode') ? 'block' : 'none';
 
-            // Re-initialize images to get a new layout
             initializeImages();
         }
 
-        // Function to check for and handle collisions between images
         function checkCollisions() {
+            // This entire function is now only called on non-mobile devices
             for (let i = 0; i < imagesState.length; i++) {
                 if (imagesState[i].isDragging) continue;
-
                 for (let j = i + 1; j < imagesState.length; j++) {
                     if (imagesState[j].isDragging) continue;
                     
                     const img1 = imagesState[i];
                     const img2 = imagesState[j];
 
-                    // Calculate distance between centers
                     const dx = (img1.x + img1.size / 2) - (img2.x + img2.size / 2);
                     const dy = (img1.y + img1.size / 2) - (img2.y + img2.size / 2);
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
-                    // Collision logic
                     if (distance < collisionRadius) {
-                        // Normalize the collision normal vector
                         const nx = dx / distance;
                         const ny = dy / distance;
 
-                        // Calculate relative velocity
                         const rel_vx = img1.vx - img2.vx;
                         const rel_vy = img1.vy - img2.vy;
                         
-                        // Calculate dot product of relative velocity and normal vector
                         const dot_product = rel_vx * nx + rel_vy * ny;
 
-                        // Only bounce if images are moving towards each other
                         if (dot_product < 0) {
-                            // Calculate impulse
                             const impulse = -2 * dot_product;
 
-                            // Apply impulse to velocities
                             img1.vx += impulse * nx;
                             img1.vy += impulse * ny;
                             img2.vx -= impulse * nx;
                             img2.vy -= impulse * ny;
 
-                            // To prevent images from getting stuck, separate them slightly
                             const overlap = collisionRadius - distance;
                             const separationX = overlap * nx;
                             const separationY = overlap * ny;
@@ -351,14 +364,11 @@
         function gameLoop(currentTime) {
             imagesState.forEach(state => {
                 if (!state.isDragging) {
-                    // Apply movement if not dragging
                     state.x += state.vx;
                     state.y += state.vy;
-                    // Apply friction to slow the images down
                     state.vx *= friction;
                     state.vy *= friction;
                     
-                    // Cap the speed to prevent it from building up too much, only after 1 second of being dropped
                     if (currentTime - state.dropTime > 1000) {
                         const speed = Math.sqrt(state.vx * state.vx + state.vy * state.vy);
                         if (speed > maxSpeed) {
@@ -374,7 +384,6 @@
                 const elementWidth = state.element.offsetWidth;
                 const elementHeight = state.element.offsetHeight;
 
-                // Corner detection and bounce logic
                 const hitLeft = state.x < 0;
                 const hitRight = state.x + elementWidth > vw;
                 const hitTop = state.y < 0;
@@ -382,13 +391,11 @@
                 
                 if (hitLeft || hitRight) {
                     state.vx = -state.vx;
-                    // Reset position to prevent sticking to the edge
                     if (hitLeft) state.x = 0;
                     if (hitRight) state.x = vw - elementWidth;
                 }
                 if (hitTop || hitBottom) {
                     state.vy = -state.vy;
-                    // Reset position to prevent sticking to the edge
                     if (hitTop) state.y = 0;
                     if (hitBottom) state.y = vh - elementHeight;
                 }
@@ -396,12 +403,14 @@
                 state.element.style.transform = `translate(${state.x}px, ${state.y}px) rotate(${state.rotation}deg)`;
             });
 
-            checkCollisions();
+            // Conditionally run collision detection for non-mobile devices
+            if (!isMobileDevice) {
+                checkCollisions();
+            }
 
             requestAnimationFrame(gameLoop);
         }
 
-        // --- Drag and Drop Logic ---
         let currentDragging = null;
 
         document.addEventListener('mousedown', (e) => {
@@ -418,13 +427,11 @@
                 state.lastX = state.x;
                 state.lastY = state.y;
                 state.lastTime = performance.now();
-                state.vx = 0; // Stop existing velocity
+                state.vx = 0;
                 state.vy = 0;
-                // Retro mode specific drag setup
                 if (document.body.classList.contains('retro-mode')) {
                     initialDragX = e.clientX;
                     initialDragY = e.clientY;
-                    // Get the dominant color of the image when dragging starts
                     dragLineColor = getDominantColor(target);
                 }
             }
@@ -442,9 +449,8 @@
                 state.startX = e.clientX;
                 state.startY = e.clientY;
 
-                // Calculate "throwing" velocity
                 const timeDiff = performance.now() - state.lastTime;
-                state.vx = (state.x - state.lastX) / timeDiff * 16.67; // Normalize velocity
+                state.vx = (state.x - state.lastX) / timeDiff * 16.67;
                 state.vy = (state.y - state.lastY) / timeDiff * 16.67;
                 
                 state.lastX = state.x;
@@ -453,7 +459,6 @@
 
                 state.wasDragged = true;
 
-                // Retro mode specific drag effect
                 if (document.body.classList.contains('retro-mode')) {
                     const dragDistance = Math.sqrt(
                         Math.pow(e.clientX - initialDragX, 2) + 
@@ -466,17 +471,15 @@
                             playErrorSound();
                         }
                         
-                        // Draw the line on the canvas using the image's color
                         ctx.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
                         ctx.beginPath();
                         ctx.moveTo(initialDragX, initialDragY);
                         ctx.lineTo(e.clientX, e.clientY);
                         ctx.strokeStyle = dragLineColor;
                         ctx.lineWidth = 2;
-                        ctx.setLineDash([5, 5]); // Dashed line
+                        ctx.setLineDash([5, 5]);
                         ctx.stroke();
                     } else {
-                        // If we are below the threshold, but had an error, clear the line
                         if (state.errorTriggered) {
                             ctx.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
                         }
@@ -490,9 +493,8 @@
             if (currentDragging) {
                 currentDragging.isDragging = false;
                 currentDragging.element.classList.remove('dragging');
-                currentDragging.dropTime = performance.now(); // Set drop time when released
+                currentDragging.dropTime = performance.now();
                 
-                // Clear the drag line and reset error flag for retro mode
                 if (document.body.classList.contains('retro-mode')) {
                     ctx.clearRect(0, 0, dragCanvas.width, dragCanvas.height);
                     currentDragging.errorTriggered = false;
@@ -502,35 +504,29 @@
             }
         });
         
-        // Prevent default link action if dragged
         images.forEach(image => {
             image.parentElement.addEventListener('click', (e) => {
                 const state = imagesState.find(s => s.element === image);
                 if (state && state.wasDragged) {
                     e.preventDefault();
-                    state.wasDragged = false; // Reset the flag
+                    state.wasDragged = false;
                 }
             }, true);
         });
 
-        // Main entry point
-        window.onload = function() {
-            // Set canvas size
+        dragCanvas.width = vw;
+        dragCanvas.height = vh;
+        initializeImages();
+        requestAnimationFrame(gameLoop);
+        
+        window.onresize = () => {
+            vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
             dragCanvas.width = vw;
             dragCanvas.height = vh;
-
             initializeImages();
-            requestAnimationFrame(gameLoop);
-
-            // Set up the resize handler
-            window.onresize = () => {
-                vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-                vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-                dragCanvas.width = vw;
-                dragCanvas.height = vh;
-                initializeImages();
-            };
         };
+    };
     </script>
 </body>
 </html>
