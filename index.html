@@ -181,11 +181,11 @@
             <a href="https://www.twitch.tv/goosegang17/schedule" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
                 Schedule
             </a>
-            <!-- New modern links -->
-            <a href="https://x.com/GooseGang27" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+            <!-- Updated button styles for X and YouTube -->
+            <a href="https://x.com/GooseGang27" class="w-full text-white bg-blue-500 hover:bg-blue-600 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
                 X (formerly Twitter)
             </a>
-            <a href="https://www.youtube.com/@goosegangyt7118" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+            <a href="https://www.youtube.com/@goosegangyt7118" class="w-full text-white bg-red-500 hover:bg-red-600 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
                 YouTube
             </a>
             <!-- Button to toggle style -->
@@ -451,8 +451,11 @@
             }
 
             // --- Card Collision Detection ---
+            // Calculate the image's next position
             const nextX = state.x + state.vx;
             const nextY = state.y + state.vy;
+            
+            // Check if the image will collide with the card in the next frame
             const isCollidingWithCard = (
                 nextX < cardRect.right &&
                 nextX + elementWidth > cardRect.left &&
@@ -468,17 +471,17 @@
                 if (overlapX < overlapY) {
                     state.vx = -state.vx;
                     // Nudge the image out of the card
-                    if (nextX + elementWidth > cardRect.left && nextX < cardRect.left) {
+                    if (nextX < cardRect.left) {
                         state.x = cardRect.left - elementWidth;
-                    } else if (nextX < cardRect.right && nextX + elementWidth > cardRect.right) {
+                    } else {
                         state.x = cardRect.right;
                     }
                 } else {
                     state.vy = -state.vy;
                     // Nudge the image out of the card
-                    if (nextY + elementHeight > cardRect.top && nextY < cardRect.top) {
+                    if (nextY < cardRect.top) {
                         state.y = cardRect.top - elementHeight;
-                    } else if (nextY < cardRect.bottom && nextY + elementHeight > cardRect.bottom) {
+                    } else {
                         state.y = cardRect.bottom;
                     }
                 }
