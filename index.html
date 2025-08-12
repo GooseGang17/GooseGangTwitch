@@ -26,7 +26,7 @@
         /* Style for each animated background image */
         .bg-image {
             position: absolute;
-            width: 250px;
+            width: 150px;
             height: auto;
             opacity: 0.2;
             filter: grayscale(100%);
@@ -47,15 +47,15 @@
             filter: grayscale(0%);
         }
 
-        .bg-image.dragging {
-            cursor: grabbing;
-        }
-
         /* New class for the temporary full-color effect */
         .full-color {
-            filter: grayscale(0%);
-            opacity: 1;
+            filter: grayscale(0%) !important;
+            opacity: 1 !important;
             transition: filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        .bg-image.dragging {
+            cursor: grabbing;
         }
 
         .glass-card {
@@ -155,7 +155,7 @@
         </a>
         <a href="https://vgen.co/NochuVT" target="_blank">
             <img src="https://i.postimg.cc/MTrv9HZc/GOOSE-HONK-2048.png" alt="OOSEHONK" class="bg-image">
-	 </a>
+        </a>
         <a href="https://www.twitch.tv/myriadaptive" target="_blank">
             <img src="https://i.postimg.cc/bYHfDmN5/Mraid-GOose.png" alt="Myriadaptive's Image" class="bg-image">
 
@@ -180,6 +180,13 @@
             </a>
             <a href="https://www.twitch.tv/goosegang17/schedule" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
                 Schedule
+            </a>
+            <!-- New modern links -->
+            <a href="https://x.com/GooseGang27" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+                X (formerly Twitter)
+            </a>
+            <a href="https://www.youtube.com/@goosegangyt7118" class="w-full text-white bg-purple-600 hover:bg-purple-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
+                YouTube
             </a>
             <!-- Button to toggle style -->
             <button id="toggle-style-button" onclick="toggleStyle()" class="w-full text-white bg-gray-600 hover:bg-gray-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
@@ -211,6 +218,10 @@
             <p class="text-xs text-center mt-4">
                 Click the art to see the artist
             </p>
+            <div class="mt-4 text-center">
+                <a href="https://x.com/GooseGang27" class="text-xs">X (formerly Twitter)</a> |
+                <a href="https://www.youtube.com/@goosegangyt7118" class="text-xs">YouTube</a>
+            </div>
         </div>
     </div>
 
@@ -220,7 +231,7 @@
     let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     const speeds = [1, 1.5, 2, 2.5, 3];
-    const collisionRadius = 125;
+    const collisionRadius = 75;
     const friction = 0.99;
     const minSpeed = 0.5; // Minimum speed to ensure constant movement
     let maxSpeed;
@@ -320,7 +331,8 @@
                 wasDragged: false,
                 errorTriggered: false,
                 dropTime: 0,
-                bounceCount: 0 // Initialize bounce count for each image
+                bounceCount: 0, // Initialize bounce count for each image
+                colorResetTime: 0 // New property to track when to reset color
             });
         });
     }
@@ -385,6 +397,12 @@
     }
 
     function gameLoop(currentTime) {
+        // Get the active card's bounding rectangle
+        const modernCard = document.getElementById('modern-card');
+        const retroCard = document.getElementById('retro-card');
+        const activeCard = document.body.classList.contains('retro-mode') ? retroCard : modernCard;
+        const cardRect = activeCard.getBoundingClientRect();
+        
         imagesState.forEach(state => {
             if (!state.isDragging) {
                 state.x += state.vx;
@@ -413,20 +431,65 @@
             const elementWidth = state.element.offsetWidth;
             const elementHeight = state.element.offsetHeight;
 
+            // Check for wall collisions and trigger color change
             const hitLeft = state.x < 0;
             const hitRight = state.x + elementWidth > vw;
             const hitTop = state.y < 0;
             const hitBottom = state.y + elementHeight > vh;
-            
+
             if (hitLeft || hitRight) {
                 state.vx = -state.vx;
                 if (hitLeft) state.x = 0;
                 if (hitRight) state.x = vw - elementWidth;
+                state.colorResetTime = currentTime; // Trigger color change
             }
             if (hitTop || hitBottom) {
                 state.vy = -state.vy;
                 if (hitTop) state.y = 0;
                 if (hitBottom) state.y = vh - elementHeight;
+                state.colorResetTime = currentTime; // Trigger color change
+            }
+
+            // --- Card Collision Detection ---
+            const nextX = state.x + state.vx;
+            const nextY = state.y + state.vy;
+            const isCollidingWithCard = (
+                nextX < cardRect.right &&
+                nextX + elementWidth > cardRect.left &&
+                nextY < cardRect.bottom &&
+                nextY + elementHeight > cardRect.top
+            );
+
+            if (isCollidingWithCard) {
+                // Determine which side of the card was hit and reverse the velocity
+                const overlapX = Math.min(nextX + elementWidth - cardRect.left, cardRect.right - nextX);
+                const overlapY = Math.min(nextY + elementHeight - cardRect.top, cardRect.bottom - nextY);
+
+                if (overlapX < overlapY) {
+                    state.vx = -state.vx;
+                    // Nudge the image out of the card
+                    if (nextX + elementWidth > cardRect.left && nextX < cardRect.left) {
+                        state.x = cardRect.left - elementWidth;
+                    } else if (nextX < cardRect.right && nextX + elementWidth > cardRect.right) {
+                        state.x = cardRect.right;
+                    }
+                } else {
+                    state.vy = -state.vy;
+                    // Nudge the image out of the card
+                    if (nextY + elementHeight > cardRect.top && nextY < cardRect.top) {
+                        state.y = cardRect.top - elementHeight;
+                    } else if (nextY < cardRect.bottom && nextY + elementHeight > cardRect.bottom) {
+                        state.y = cardRect.bottom;
+                    }
+                }
+            }
+
+            // Apply or remove the color class based on the timer
+            if (state.colorResetTime > 0 && (currentTime - state.colorResetTime < 5000)) {
+                state.element.classList.add('full-color');
+            } else {
+                state.element.classList.remove('full-color');
+                state.colorResetTime = 0;
             }
             
             state.element.style.transform = `translate(${state.x}px, ${state.y}px) rotate(${state.rotation}deg)`;
